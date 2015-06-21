@@ -37,18 +37,17 @@ TARGET_NO_BOOTLOADER := true
 
 # Kernel information
 BOARD_KERNEL_BASE     := 0x00000000
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=g2 user_debug=31 msm_rtb.filter=0x0
-BOARD_MKBOOTIMG_ARGS  := --ramdisk_offset 0x05000000 --tags_offset 0x04800000
+BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=b1 user_debug=31 msm_rtb.filter=0x0
+BOARD_MKBOOTIMG_ARGS  := --kernel_offset 0x0008000 --ramdisk_offset 0x2000000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_SEPARATED_DT := true
 BOARD_CUSTOM_BOOTIMG := true
-BOARD_CUSTOM_BOOTIMG_MK := device/lge/g2-common/releasetools/mkbootimg.mk
-TARGET_KERNEL_SOURCE := kernel/lge/msm8974
+BOARD_CUSTOM_BOOTIMG_MK := device/lge/b1-common/mkbootimg.mk
+TARGET_KERNEL_SOURCE := kernel/lge/stock
 TARGET_KERNEL_ARCH := arm
 
 BOARD_USES_ALSA_AUDIO:= true
 
-TARGET_BOOTLOADER_BOARD_NAME := galbi
 TARGET_BOARD_PLATFORM := msm8974
 
 WPA_SUPPLICANT_VERSION := VER_0_8_X
@@ -62,7 +61,7 @@ WIFI_DRIVER_FW_PATH_PARAM   := "/sys/module/bcmdhd/parameters/firmware_path"
 WIFI_DRIVER_FW_PATH_STA     := "/system/etc/firmware/fw_bcmdhd.bin"
 WIFI_DRIVER_FW_PATH_AP      := "/system/etc/firmware/fw_bcmdhd_apsta.bin"
 
-BOARD_EGL_CFG := device/lge/g2-common/egl.cfg
+BOARD_EGL_CFG := device/lge/b1-common/egl.cfg
 
 USE_OPENGL_RENDERER := true
 TARGET_USES_ION := true
@@ -76,9 +75,18 @@ TARGET_DISPLAY_USE_RETIRE_FENCE := true
 # QCOM PowerHAL
 TARGET_POWERHAL_VARIANT := qcom
 
+# QCOM
+BOARD_USES_QCOM_HARDWARE := true
+
 # Camera
 USE_DEVICE_SPECIFIC_CAMERA := true
-TARGET_RELEASE_CPPFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
+COMMON_GLOBAL_CFLAGS += -DLG_CAMERA_HARDWARE
+COMMON_GLOBAL_CFLAGS += -DPROPERTY_PERMS_APPEND=' \
+    { "persist.data.sensor_name", AID_CAMERA, 0 }, \
+    { "camera.4k2k.enable", AID_MEDIA, 0 }, \
+    { "persist.data.rear.minfps", AID_MEDIA, 0 }, \
+    { "persist.data.front.minfps", AID_MEDIA, 0 }, \
+    '
 
 # Audio
 TARGET_USES_QCOM_COMPRESSED_AUDIO := true
@@ -88,7 +96,7 @@ BOARD_HAVE_LOW_LATENCY_AUDIO := true
 TARGET_HW_DISK_ENCRYPTION := true
 
 RECOVERY_FSTAB_VERSION = 2
-TARGET_RECOVERY_FSTAB = device/lge/g2-common/fstab.g2
+TARGET_RECOVERY_FSTAB = device/lge/b1-common/fstab.b1
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 BOARD_HAS_NO_SELECT_BUTTON := true
@@ -105,8 +113,8 @@ BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)
 
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/lge/g2-common/bluetooth
-BOARD_BLUEDROID_VENDOR_CONF := device/lge/g2-common/bluetooth/vnd_g2.txt
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/lge/b1-common/bluetooth
+BOARD_BLUEDROID_VENDOR_CONF := device/lge/b1-common/bluetooth/vnd_b1.txt
 
 # Fonts
 EXTENDED_FONT_FOOTPRINT := true
@@ -116,17 +124,17 @@ TARGET_NO_RPC := true
 
 BOARD_CHARGER_ENABLE_SUSPEND := true
 
-BOARD_HARDWARE_CLASS := device/lge/g2-common/cmhw/
+BOARD_HARDWARE_CLASS := device/lge/b1-common/cmhw/
 
 # SELinux policies
 # qcom sepolicy
 include device/qcom/sepolicy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += \
-        device/lge/g2-common/sepolicy
+        device/lge/b1-common/sepolicy
 
-BOARD_RIL_CLASS := ../../../device/lge/g2-common/ril/
-#TARGET_RELEASETOOLS_EXTENSIONS := device/lge/g2-common/releasetools
+BOARD_RIL_CLASS := ../../../device/lge/b1-common/ril/
+#TARGET_RELEASETOOLS_EXTENSIONS := device/lge/b1-common/releasetools
 
 COMMON_GLOBAL_CFLAGS += -DBOARD_CHARGING_CMDLINE_NAME='"androidboot.mode"' -DBOARD_CHARGING_CMDLINE_VALUE='"chargerlogo"'
 BOARD_USES_QC_TIME_SERVICES := true
@@ -147,6 +155,6 @@ NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 
 TARGET_USES_LOGD := false
 
-TARGET_SPECIFIC_HEADER_PATH := device/lge/g2-common/include
+TARGET_SPECIFIC_HEADER_PATH := device/lge/b1-common/include
 
 BOARD_USES_LEGACY_MMAP := true

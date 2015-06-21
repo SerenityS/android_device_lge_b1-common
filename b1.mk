@@ -14,9 +14,6 @@
 # limitations under the License.
 #
 
-# Call common vendor
-$(call inherit-product-if-exists, vendor/lge/g2-common/g2-common-vendor.mk)
-
 # Overlays
 DEVICE_PACKAGE_OVERLAYS := $(LOCAL_PATH)/overlay
 
@@ -31,13 +28,13 @@ PRODUCT_AAPT_CONFIG := normal hdpi xhdpi xxhdpi
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/init.g2.usb.rc:root/init.g2.usb.rc \
-    $(LOCAL_PATH)/ueventd.g2.rc:root/ueventd.g2.rc
+    $(LOCAL_PATH)/init.b1.usb.rc:root/init.b1.usb.rc \
+    $(LOCAL_PATH)/ueventd.b1.rc:root/ueventd.b1.rc
 
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/init.g2.rc:root/init.g2.rc \
-    $(LOCAL_PATH)/fstab.g2:root/fstab.g2
+    $(LOCAL_PATH)/init.b1.rc:root/init.b1.rc \
+    $(LOCAL_PATH)/fstab.b1:root/fstab.b1
 
 
 PRODUCT_COPY_FILES += \
@@ -52,9 +49,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/thermald.conf:system/etc/thermald.conf \
     $(LOCAL_PATH)/configs/thermal-engine.conf:system/etc/thermal-engine.conf
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/touch_dev.idc:system/usr/idc/touch_dev.idc
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
@@ -144,7 +138,7 @@ PRODUCT_PACKAGES += \
 
 # Local wrapper for fixups
 PRODUCT_PACKAGES += \
-    camera.g2
+    camera.msm8974
 
 PRODUCT_PACKAGES += \
     audio_policy.default \
@@ -168,13 +162,13 @@ PRODUCT_PACKAGES += \
     libloc_eng \
     libloc_api_v02 \
     libgps.utils \
-    gps.g2
+    gps.msm8974
 
 PRODUCT_PACKAGES += \
     hwaddrs
 
 PRODUCT_PACKAGES += \
-    lights.g2
+    lights.b1
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/bcmdhd.cal:system/etc/wifi/bcmdhd.cal

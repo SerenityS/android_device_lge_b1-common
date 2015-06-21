@@ -1,4 +1,4 @@
-import init.g2.usb.rc
+import init.b1.usb.rc
 
 on early-init
     mkdir /sys 0771 system system
@@ -21,9 +21,14 @@ on init
     mkdir /mnt/shell/emulated 0700 shell shell
     mkdir /storage 0550 system sdcard_r
     mkdir /storage/emulated 0555 root root
+    mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
+    mkdir /mnt/media_rw/usbdisk0 0700 media_rw media_rw
+    mkdir /storage/sdcard1 0700 root root
+    mkdir /storage/usbdisk0 0700 root root
 
     export EXTERNAL_STORAGE /storage/emulated/legacy
     export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
+    export SECONDARY_STORAGE /storage/sdcard1:/storage/usbdisk0
     export EMULATED_STORAGE_TARGET /storage/emulated
 
     # Support legacy paths
@@ -31,6 +36,10 @@ on init
     symlink /storage/emulated/legacy /mnt/sdcard
     symlink /storage/emulated/legacy /storage/sdcard0
     symlink /mnt/shell/emulated/0 /storage/emulated/legacy
+    symlink /storage/sdcard1 /sdcard1
+    symlink /storage/sdcard1 /mnt/sdcard1
+    symlink /storage/usbdisk0 /usbdisk
+    symlink /storage/usbdisk0 /mnt/usbdisk
 
     # Setup custom emergency number list based on
     # the MCC. This is needed by RIL.
@@ -48,7 +57,7 @@ on charger-fs
     start rmt_storage
 
 on fs
-    mount_all ./fstab.g2
+    mount_all ./fstab.b1
     restorecon_recursive /sns
     write /sys/kernel/boot_adsp/boot 1
     setprop ro.crypto.fuse_sdcard true
@@ -125,6 +134,7 @@ on boot
 # NFC: create data/nfc for nv storage
     mkdir /data/nfc 770 nfc nfc
     mkdir /data/nfc/param 770 nfc nfc
+    symlink /dev/pn547 /dev/pn544
 
 # Assign TCP buffer thresholds to be ceiling value of technology maximums
 # Increased technology maximums should be reflected here.
@@ -142,13 +152,32 @@ on boot
     restorecon /proc/bluetooth/sleep/lpm
     restorecon /proc/bluetooth/sleep/btwrite
 
-# lights perms
-    chown system system /sys/class/leds/red/brightness
-    chown system system /sys/class/leds/green/brightness
-    chown system system /sys/class/leds/blue/brightness
-    chown system system /sys/class/g2_rgb_led/use_patterns/blink_patterns
+    # led
     chown system system /sys/class/leds/button-backlight1/brightness
     chown system system /sys/class/leds/button-backlight2/brightness
+    chmod 0660 /sys/class/leds/button-backlight1/brightness
+    chmod 0660 /sys/class/leds/button-backlight2/brightness
+
+    # emotional led
+    chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/blink_patterns
+    chmod 0644 /sys/devices/virtual/lg_rgb_led/use_patterns/blink_patterns
+    chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/input_patterns
+    chmod 0644 /sys/devices/virtual/lg_rgb_led/use_patterns/input_patterns
+    chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/onoff_patterns
+    chmod 0644 /sys/devices/virtual/lg_rgb_led/use_patterns/onoff_patterns
+    chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/setting
+    chmod 0644 /sys/devices/virtual/lg_rgb_led/use_patterns/setting
+
+    #lp5521
+    chown system system /sys/devices/f9967000.i2c/i2c-0/0-0032/led_current_index
+    chown system system /sys/devices/f9967000.i2c/i2c-0/0-0032/led_pattern
+    chown system system /sys/devices/f9967000.i2c/i2c-0/0-0032/led_blink
+    chown system system /sys/devices/f9967000.i2c/i2c-0/0-0032/leds/R/brightness
+    chown system system /sys/devices/f9967000.i2c/i2c-0/0-0032/leds/G/brightness
+    chown system system /sys/devices/f9967000.i2c/i2c-0/0-0032/leds/B/brightness
+    chown system system /sys/devices/f9967000.i2c/i2c-0/0-0032/leds/R/led_current
+    chown system system /sys/devices/f9967000.i2c/i2c-0/0-0032/leds/G/led_current
+    chown system system /sys/devices/f9967000.i2c/i2c-0/0-0032/leds/B/led_current
 
     chown system wifi /sys/module/bcmdhd/parameters/firmware_path
     chmod 0640 /sys/module/bcmdhd/parameters/firmware_path
@@ -156,6 +185,12 @@ on boot
 # msm specific files that need to be created on /data
 on post-fs-data
     mkdir /data/media 0770 media_rw media_rw
+
+    # bluetooth
+    mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
+
+    # wifi
+    chown wifi system /persist/wifi
 
     # Create the directories used by the Wireless subsystem
     mkdir /data/misc/wifi 0770 wifi wifi
@@ -276,15 +311,34 @@ on post-fs-data
     chown system camera /sys/class/leds/led:flash_torch/brightness
     chmod 0660 /sys/class/leds/led:flash_torch/brightness
 
-    chown system radio /sys/devices/virtual/input/lge_touch/touch_gesture
-    chmod 0664 /sys/devices/virtual/input/lge_touch/touch_gesture
-    chown root system /sys/devices/platform/tspdrv/nforce_timed
+on boot
+    chmod 664 /sys/devices/virtual/lg_rgb_led/use_patterns/window_color
+    chown system system /sys/devices/virtual/lg_rgb_led/use_patterns/window_color
+
+on post-fs
+    chmod 664 /sys/devices/virtual/input/lge_touch/touch_gesture_character
+    chown system system /sys/devices/virtual/input/lge_touch/touch_gesture_character
+    chmod 664 /sys/devices/virtual/input/lge_touch/touch_gesture_volume
+    chown system system /sys/devices/virtual/input/lge_touch/touch_gesture_volume
+    chmod 664 /sys/devices/virtual/input/lge_touch/quick_cover_status
+    chown system system /sys/devices/virtual/input/lge_touch/quick_cover_status
+    chmod 664 /sys/devices/virtual/input/lge_touch/update_fw
+    chown system system /sys/devices/virtual/input/lge_touch/update_fw
+    chmod 664 /sys/devices/virtual/input/lge_touch/update_cfg
+    chown system system /sys/devices/virtual/input/lge_touch/update_cfg
+    chmod 664 /sys/devices/f9924000.i2c/i2c-2/2-004a/mem_access
+    chown system system /sys/devices/f9924000.i2c/i2c-2/2-004a/mem_access
+    chmod 664 /sys/devices/virtual/input/lge_touch/lpwg_data
+    chown system system /sys/devices/virtual/input/lge_touch/lpwg_data
+    chmod 664 /sys/devices/virtual/input/lge_touch/lpwg_notify
+    chown system system /sys/devices/virtual/input/lge_touch/lpwg_notify
+    chmod 664 /sys/devices/virtual/input/lge_touch/use_quick_window
+    chown system system /sys/devices/virtual/input/lge_touch/use_quick_window
     chown root system /sys/devices/platform/kcal_ctrl.0/kcal
     chown root system /sys/devices/platform/kcal_ctrl.0/kcal_ctrl
     chmod 0664 /sys/devices/platform/tspdrv/nforce_timed
     chmod 0664 /sys/devices/platform/kcal_ctrl.0/kcal
     chmod 0664 /sys/devices/platform/kcal_ctrl.0/kcal_ctrl
-    restorecon /sys/devices/platform/tspdrv/nforce_timed
     restorecon /sys/devices/platform/kcal_ctrl.0/kcal
     restorecon /sys/devices/platform/kcal_ctrl.0/kcal_ctrl
 
@@ -338,6 +392,11 @@ service sensors /system/bin/sensors.qcom
     user root
     group sensors radio system
 
+service qcom-sensor-sh /system/bin/sh /sensors.sh
+    class main
+    user root
+    oneshot
+
 service dhcpcd_wlan0 /system/bin/dhcpcd -aABDKL
     class main
     disabled
@@ -366,6 +425,11 @@ service iprenew_bt-pan /system/bin/dhcpcd -n
     disabled
     oneshot
 
+service irsc_util /system/bin/irsc_util "/etc/sec_config"
+    class main
+    user root
+    oneshot
+
 on property:ro.data.large_tcp_window_size=true
     # Adjust socket buffer to enlarge TCP receive window for high bandwidth (e.g. DO-RevB)
     write /proc/sys/net/ipv4/tcp_adv_win_scale 2
@@ -385,6 +449,18 @@ service qcamerasvr /system/bin/mm-qcamera-daemon
     class late_start
     user camera
     group camera system inet input
+
+service bdAddrLoader /system/bin/bdAddrLoader -f /persist/bluetooth/.bdaddr -h -x
+    class main
+    user bluetooth
+    group system bluetooth
+    oneshot
+
+# start GNSS/Sensor interface daemon
+service gsiff_daemon /system/bin/gsiff_daemon
+    class late_start
+    user gps
+    group gps net_raw misc
 
 service qseecomd /system/bin/qseecomd
     class late_start
@@ -450,9 +526,17 @@ service time_daemon /system/bin/time_daemon
     user root
     group root
 
-service fuse_usb /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/usb /storage/usb
+service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/sdcard1 /storage/sdcard1
     class late_start
     disabled
+
+service fuse_usbdisk0 /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/usbdisk0 /storage/usbdisk0
+    class late_start
+    disabled
+
+# This will make sure that sdcard service starts as late_start.
+on nonencrypted
+    setprop ro.fuse_sdcard ${persist.fuse_sdcard}
 
 ## Power profiles (CM QS tile)
 ## restarting thermal-engine will kill the system :/

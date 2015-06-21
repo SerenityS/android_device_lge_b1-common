@@ -66,6 +66,7 @@
 /dev/hsicctl1             0640   radio      radio
 /dev/hsicctl2             0640   radio      radio
 /dev/hsicctl3             0640   radio      radio
+/dev/lg_mtp_usb           0660   root       mtp 
 /dev/video*               0660   system     camera
 /dev/media*               0660   system     camera
 /dev/v4l-subdev*          0660   system     camera
@@ -83,7 +84,7 @@
 /dev/msm_vidc_enc         0660   system     audio
 /dev/msm_rotator          0660   system     system
 /dev/hw_random            0660   system     system
-/dev/adsprpc-smd          0664   system     system
+/dev/adsprpc-smd          0660   system     system
 
 #permissions for audio
 /dev/msm_qcelp            0660   system     audio
@@ -146,37 +147,45 @@
 # LGE_CHANGE_S, [NFC][minwoo.kwon@lge.com], 2013-03-9, NFC Bring up
 /dev/pn544         0660   nfc        nfc
 # LGE_CHANGE_E, [NFC][minwoo.kwon@lge.com], 2013-03-9, NFC Bring up
-# LGE_CHANGE_E, [NFC][sungwook.ahn@lge.com], 2013-03-9, NFC Bring up
-/dev/snfc_uart		0666	nfc	nfc
-/dev/snfc_intu_poll	0440	nfc	nfc
-/dev/snfc_rfs		0440	nfc	nfc
-/dev/snfc_uart_control	0660	nfc	nfc
-/dev/snfc_cen		0664	nfclock	nfclock
-/dev/snfc_available_poll	0440	nfc	nfc
-/dev/ttyHSL2              0666  root       root
-/dev/i2c-0                0666  root      root
+# LGE_CHANGE_S, [NFC][byunggu.kang@lge.com], 2013-10-09, NFC Bring up
+/dev/pn547         0660   nfc        nfc
+# LGE_CHANGE_E, [NFC][byunggu.kang@lge.com], 2013-10-09, NFC Bring up
+# LGE_CHANGE_S, [NFC][sungwook.ahn@lge.com], 2013-03-9, NFC Bring up
+#/dev/snfc_uart		0666	nfc	nfc
+#/dev/snfc_intu_poll	0440	nfc	nfc
+#/dev/snfc_rfs		0440	nfc	nfc
+#/dev/snfc_uart_control	0660	nfc	nfc
+#/dev/snfc_cen		0664	nfclock	nfclock
+#/dev/snfc_available_poll	0440	nfc	nfc
+#/dev/ttyHSL2              0666  root       root
+#/dev/i2c-0                0666  root      root
 # LGE_CHANGE_E, [NFC][sungwook.ahn@lge.com], 2013-03-9, NFC Bring up
 # LGE_CHANGE_S, 20130307, LGE-FeliCa@lge.com
-/dev/felica               0660  mfc       system
-/dev/felica_cen           0464  mfc       felicalock
-/dev/felica_pon           0660  mfc       system
-/dev/felica_rfs           0440  mfc       mfc
-/dev/felica_rws           0440  mfc       mfc
-/dev/ttyHSL2              0666  mfc       system
-/dev/i2c-0                0666  mfc       system
-/dev/felica_cal           0666  mfc       mfc
-/dev/felica_test          0666  root      root
+#/dev/felica               0660  mfc       system
+#/dev/felica_cen           0464  mfc       felicalock
+#/dev/felica_pon           0660  mfc       system
+#/dev/felica_rfs           0440  mfc       mfc
+#/dev/felica_rws           0440  mfc       mfc
+#/dev/ttyHSL2              0666  mfc       system
+#/dev/i2c-0                0666  mfc       system
+#/dev/felica_cal           0666  mfc       mfc
+#/dev/felica_test          0666  root      root
 # LGE_CHANGE_S, 20130307, LGE-FeliCa@lge.com
 # LGE_CHANGE_S, [modemBSP][jin.park@lge.com], 2013-03-19, LGE MOCA driver
-/dev/lge_moca_drv0        0666   system     system
+/dev/lge_moca_drv0        0660   system     system
 # LGE_CHANGE_E, [modemBSP][jin.park@lge.com], 2013-03-19, LGE MOCA driver
 
 # Begin Immersion changes(donguk.ki@lge.com)
-/dev/tspdrv               0666   root       root
+/dev/tspdrv               0660   system     system
 # End Immersion changes
 /dev/lge_ddm_tty0         0660   system     system
 
-/dev/ttyHS99              0600   bluetooth  bluetooth
-/dev/block/mmcblk0p13     0660   system     wifi
-/dev/btlock               0660   bluetooth  bluetooth
-/dev/rfkill               0660   wifi       wifi
+# LGE_CHANGE_S, [WLC][kyungkeun.park@lge.com], 2013-04-01, FTT Daemon
+/dev/ftt_ctrl    0660    system    system
+# LGE_CHANGE_E, [WLC][kyungkeun.park@lge.com], 2013-04-01, FTT Daemon
+# MSE-ADD-S iC Data Transfer
+/dev/android_dtf          0660   felicaDT   felicaDT
+/dev/dtfum                0660   felicaDT   felicaDT
+/dev/dtfig                0660   felicaDT   felicaDT
+/dev/dtfiu                0660   felicaDT   felicaDT
+# MSE-ADD-E iC Data Transfer

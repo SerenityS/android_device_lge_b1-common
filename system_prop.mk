@@ -1,5 +1,5 @@
 #
-# System Properties for G2
+# System Properties for GPRO2
 #
 
 PRODUCT_PROPERTY_OVERRIDES += \
